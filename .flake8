@@ -1,0 +1,15 @@
+[flake8]
+max-line-length = 88
+max-complexity = 10
+docstring-convention = google
+allow-star-arg-any = true
+ignore =
+    # Missing type annotation for self in method
+    ANN101
+    # Missing type annotation for cls in classmethod
+    ANN102
+    # Line break occurred before a binary operator
+    W503
+per-file-ignores =
+    # Don't require docstrings or type annotations in tests
+    tests/*:ANN,D,DAR
