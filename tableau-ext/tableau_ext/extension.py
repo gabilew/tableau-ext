@@ -15,6 +15,8 @@ from meltano.edk.extension import ExtensionBase
 from meltano.edk.process import Invoker, log_subprocess_error
 
 from tableau_auth import TableauAuth
+from utils import prepared_env
+
 log = structlog.get_logger()
 
 ENV_PREFIX = "TABLEAU_"
@@ -24,9 +26,10 @@ class Tableau(ExtensionBase):
 
     def __init__(self) -> None:
         """Initialize the extension."""
-        self.tableau_bin = "tableau"  # verify this is the correct name
+        self.tableau_bin = "tableau"
         self.tableau_invoker = Invoker(self.tableau_bin)
-        authenticator = TableauAuth()
+        self.env_config = prepared_env(ENV_PREFIX)
+        authenticator = TableauAuth(self.env_config)
         authenticator.sign_in()
         self.tableau_headers = authenticator.get_headers()
 
