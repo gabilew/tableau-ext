@@ -1,0 +1,12 @@
+# Changes here will be overwritten by Copier
+_commit: v0.3.0
+_src_path: gh:meltano/edk
+admin_name: Data Engineering
+cli_prefix: tableau
+extension_description: A meltano utility extension for Tableau that wraps the `tableau`
+    command.
+extension_id: tableau-ext
+extension_name: Tableau
+extension_name_lower: tableau
+library_name: tableau_ext
+wrapper_target_name: tableau
