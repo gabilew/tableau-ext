@@ -6,7 +6,6 @@ import requests
 from typing import Mapping, Any
 
 
-
 class TableauAuth:
     """authentication class"""
 
@@ -14,11 +13,9 @@ class TableauAuth:
         self.token_secret = config.get("TOKEN_SECRET", None)
         self.token_name = config.get("TOKEN_NAME", None)
         self.api_version = config.get("API_VERSION", None)
-        #try:
+        # try:
         self.auth_url = os.path.join(
-            config.get("BASE_URL"),
-            self.api_version,
-            "auth/signin"
+            config.get("BASE_URL"), self.api_version, "auth/signin"
         )
 
     def sign_in(self):
@@ -49,8 +46,7 @@ class TableauAuth:
     def get_headers(self):
         """get the headers with updated api token after signing in"""
         self.sign_in()
-        headers={}
+        headers = {}
         headers["X-Tableau-Auth"] = self.api_token
         headers["Accept"] = "application/json"
         return headers
-

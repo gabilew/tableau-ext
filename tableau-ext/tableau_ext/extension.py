@@ -20,6 +20,7 @@ log = structlog.get_logger()
 
 ENV_PREFIX = "TABLEAU"
 
+
 class Tableau(ExtensionBase):
     """Extension implementing the ExtensionBase interface."""
 
@@ -27,14 +28,16 @@ class Tableau(ExtensionBase):
         """Initialize the extension."""
         self.tableau_bin = "tableau"
         self.env_config = prepared_env(ENV_PREFIX)
-        
+
         authenticator = TableauAuth(self.env_config)
         authenticator.sign_in()
         self.tableau_headers = authenticator.get_headers()
-        self.base_url = f"{self.env_config.get('BASE_URL')}{self.env_config.get('API_VERSION')}/"
+        self.base_url = (
+            f"{self.env_config.get('BASE_URL')}{self.env_config.get('API_VERSION')}/"
+        )
         self.site_id = self.env_config.get("SITE_ID")
 
-    def invoke(self, command_name: str | None, *command_args:Any) -> None:
+    def invoke(self, command_name: str | None, *command_args: Any) -> None:
         """Invoke the underlying cli, that is being wrapped by this extension.
 
         Args:
@@ -54,10 +57,10 @@ class Tableau(ExtensionBase):
         return refresh(
             datasource_id=datasource_id,
             site_id=self.site_id,
-            url = self.base_url,
-            headers=self.tableau_headers
+            url=self.base_url,
+            headers=self.tableau_headers,
         )
-    
+
     def describe(self) -> models.Describe:
         """Describe the extension.
 
@@ -75,4 +78,3 @@ class Tableau(ExtensionBase):
                 ),
             ]
         )
-    
