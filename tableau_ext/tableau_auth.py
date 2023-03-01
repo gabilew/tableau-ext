@@ -3,6 +3,7 @@ import os
 from typing import Dict, Mapping
 
 import requests
+import structlog
 
 
 class TableauAuth:
@@ -23,11 +24,12 @@ class TableauAuth:
             config["BASE_URL"], self.api_version, "auth/signin"
         )
 
-    def sign_in(self) -> requests.Response:
+    def sign_in(self) -> None:
         """Sign in to tableau to get the api token to make other requests.
 
-        Returns:
-            requests.response: response with updated header.
+        Raises:
+            requests.exceptions.HTTPError: http request returned status code >= 300
+            Exception: payload is not complete
         """
         body = {
             "credentials": {
@@ -45,9 +47,18 @@ class TableauAuth:
                 "Accept": "application/json",
             },
         )
-        response.raise_for_status()
-        self.api_token = response.json()["credentials"]["token"]
-        return response
+        try:
+            response.raise_for_status()
+            payload = response.json()
+            self.api_token = payload["credentials"]["token"]
+        except requests.exceptions.HTTPError:
+            structlog.get_logger().exception(
+                f"Failed to sign in with status code {response.status_code}"
+            )
+            raise
+        except Exception:
+            structlog.get_logger().exception("Could not get api token")
+            raise
 
     def get_headers(self) -> Mapping[str, str]:
         """Get the headers with updated api token after signing in.
