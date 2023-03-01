@@ -20,7 +20,7 @@ def refresh(
         requests.Response: the response of the api call.
     """
     return requests.post(
-        url=url + f"sites/{site_id}/datasources/{datasource_id}/refresh",
+        url=url + f"/sites/{site_id}/datasources/{datasource_id}/refresh",
         headers=headers,
         json={},
     )

@@ -1,6 +1,7 @@
 """Meltano Tableau extension."""
 from __future__ import annotations
 
+import os
 from typing import Any
 
 import requests
@@ -27,9 +28,10 @@ class Tableau(ExtensionBase):
         authenticator = TableauAuth(self.env_config)
         authenticator.sign_in()
         self.tableau_headers = authenticator.get_headers()
-        self.base_url = (
-            f"{self.env_config.get('BASE_URL')}{self.env_config.get('API_VERSION')}/"
+        self.base_url = os.path.join(
+            self.env_config["BASE_URL"], self.env_config["API_VERSION"]
         )
+
         self.site_id = self.env_config["SITE_ID"]
 
     def invoke(self, command_name: str | None, *command_args: Any) -> None:
@@ -42,9 +44,8 @@ class Tableau(ExtensionBase):
         Returns None
         """
         command_name, command_args = command_args[0], command_args[1:]
-
         if command_name == "refresh":
-            self._refresh(datasource_id=command_args[0])
+            self._refresh(datasource_id=command_args[0]).text
 
     def _refresh(self, datasource_id: str) -> requests.Response:
         """Method to call refresh request.
