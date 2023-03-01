@@ -1,4 +1,5 @@
 import os
+from logging import exception
 from unittest import TestCase, mock
 
 from tableau_ext.utils import prepared_env
@@ -21,5 +22,7 @@ class TestUtils(TestCase):
             assert config["TOKEN_SECRET"] == "a"
 
     def test_prepared_env_failure(self) -> None:
-        with mock.patch.dict(os.environ, {}) and self.assertRaises(Exception):
+        with mock.patch.dict(os.environ, {}) and self.assertRaises(Exception) as ctx:
             prepared_env("TEST")
+
+        self.assertTrue("These env variables are missing" in str(ctx.exception))
