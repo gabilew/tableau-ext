@@ -1,4 +1,5 @@
 import os
+from unittest.mock import patch
 import unittest
 
 from tableau_ext.utils import prepared_env
