@@ -1,5 +1,4 @@
 import os
-from logging import exception
 from unittest import TestCase, mock
 
 from tableau_ext.utils import prepared_env
