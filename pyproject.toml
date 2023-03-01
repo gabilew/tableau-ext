@@ -32,6 +32,7 @@ black = "^22.3.0"
 flake8 = "^3.9.0"
 pre-commit = "^2.20.0"
 pytest = "^7.1"
+pytest-cov="*"
 
 [tool.isort]
 profile = "black"
