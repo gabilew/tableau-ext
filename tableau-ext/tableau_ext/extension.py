@@ -1,20 +1,15 @@
 """Meltano Tableau extension."""
 from __future__ import annotations
 
-import os
-import pkgutil
-import subprocess
-import sys
-from pathlib import Path
 from typing import Any
 
+import requests
 import structlog
 from meltano.edk import models
 from meltano.edk.extension import ExtensionBase
-
 from tableau_ext.tableau_auth import TableauAuth
 from tableau_ext.tableau_requests import refresh
-from tableau_ext.utils import MissingArgError, prepared_env
+from tableau_ext.utils import prepared_env
 
 log = structlog.get_logger()
 
@@ -35,7 +30,7 @@ class Tableau(ExtensionBase):
         self.base_url = (
             f"{self.env_config.get('BASE_URL')}{self.env_config.get('API_VERSION')}/"
         )
-        self.site_id = self.env_config.get("SITE_ID")
+        self.site_id = self.env_config["SITE_ID"]
 
     def invoke(self, command_name: str | None, *command_args: Any) -> None:
         """Invoke the underlying cli, that is being wrapped by this extension.
@@ -43,17 +38,23 @@ class Tableau(ExtensionBase):
         Args:
             command_name: The name of the command to invoke.
             command_args: The arguments to pass to the command.
-        """
 
+        Returns None
+        """
         command_name, command_args = command_args[0], command_args[1:]
 
         if command_name == "refresh":
             self._refresh(datasource_id=command_args[0])
-            # TODO add logs
-        else:
-            raise NotImplementedError("Commands supported are: refresh")
 
-    def _refresh(self, datasource_id):
+    def _refresh(self, datasource_id: str) -> requests.Response:
+        """Method to call refresh request.
+
+        Args:
+            datasource_id (str): datasource id to be refreshed.
+
+        Returns:
+            requests.Response: respose of the refresh request.
+        """
         return refresh(
             datasource_id=datasource_id,
             site_id=self.site_id,
@@ -67,7 +68,6 @@ class Tableau(ExtensionBase):
         Returns:
             The extension description
         """
-
         return models.Describe(
             commands=[
                 models.ExtensionCommand(
