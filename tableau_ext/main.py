@@ -8,7 +8,6 @@ import structlog
 import typer
 from meltano.edk.extension import DescribeFormat
 from meltano.edk.logging import default_logging_config, parse_log_level
-
 from tableau_ext.extension import Tableau
 
 APP_NAME = "Tableau"
