@@ -46,7 +46,7 @@ class Tableau(ExtensionBase):
         """
         command_name, command_args = command_args[0], command_args[1:]
         if command_name == "refresh":
-            self._refresh(datasource_id=command_args[0]).text
+            self._refresh(datasource_id=command_args[0])
 
     def _refresh(self, datasource_id: str) -> requests.Response:
         """Method to call refresh request.
