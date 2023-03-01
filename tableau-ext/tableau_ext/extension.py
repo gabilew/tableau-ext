@@ -12,13 +12,13 @@ import structlog
 from meltano.edk import models
 from meltano.edk.extension import ExtensionBase
 
-from tableau_auth import TableauAuth
-from tableau_requests import refresh
-from utils import MissingArgError, prepared_env
+from tableau_ext.tableau_auth import TableauAuth
+from tableau_ext.tableau_requests import refresh
+from tableau_ext.utils import MissingArgError, prepared_env
 
 log = structlog.get_logger()
 
-ENV_PREFIX = "TABLEAU_"
+ENV_PREFIX = "TABLEAU"
 
 class Tableau(ExtensionBase):
     """Extension implementing the ExtensionBase interface."""
@@ -34,22 +34,21 @@ class Tableau(ExtensionBase):
         self.base_url = f"{self.env_config.get('BASE_URL')}{self.env_config.get('API_VERSION')}/"
         self.site_id = self.env_config.get("SITE_ID")
 
-    def invoke(self, command_name: str | None, **command_kargs: Any) -> None:
+    def invoke(self, command_name: str | None, *command_args:Any) -> None:
         """Invoke the underlying cli, that is being wrapped by this extension.
 
         Args:
             command_name: The name of the command to invoke.
             command_args: The arguments to pass to the command.
         """
+
+        command_name, command_args = command_args[0], command_args[1:]
+
         if command_name == "refresh":
-            if "datasource_id"  not in command_kargs:
-                raise MissingArgError("datasource_id must be in command kwargs")
-            else:
-                if "datasource_id" is None:
-                    raise ValueError("datasource_id cannot be null")
-                else:
-                    self._refresh(datasource_id=command_kargs["datasource_id"])
-                    # TODO add logs
+            self._refresh(datasource_id=command_args[0])
+            # TODO add logs
+        else:
+            raise NotImplementedError("Commands supported are: refresh")
 
     def _refresh(self, datasource_id):
         return refresh(
@@ -76,3 +75,4 @@ class Tableau(ExtensionBase):
                 ),
             ]
         )
+    

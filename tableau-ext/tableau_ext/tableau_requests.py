@@ -18,7 +18,7 @@ def refresh(datasource_id: str, site_id:str, url:str, headers: Dict) -> requests
     Returns the response of the api call
     """
     return requests.post(
-        url = url + f"/sites/{site_id}/datasources/{datasource_id}/refresh",
+        url = url + f"sites/{site_id}/datasources/{datasource_id}/refresh",
         headers=headers,
         json={}
     )
