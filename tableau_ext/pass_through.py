@@ -3,7 +3,6 @@ import sys
 
 import structlog
 from meltano.edk.logging import pass_through_logging_config
-
 from tableau_ext.extension import Tableau
 
 
