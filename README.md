@@ -1,28 +1,27 @@
-# Basic-python-template
+# Tableau
 
-A github repo template for generic Meltano python projects
+Tableau is A meltano utility extension for Tableau that wraps the `tableau` command.
 
-## Using this template
+## Installing this extension for local development
 
-1. create a new github project - selecting this repo as the source template - [doc: creating a repo from a template](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-repository-from-a-template)
-2. Update `pyproject.toml` renaming the repo and python packages as needed
-3. Rename or remove the `basic_python_template` directory as needed
-4. Update or remove the `tests` as needed
-5. Take a look at the `.github` dir and update the issue templates and semantic prs workflow as needed
-6. Visit the [internal-tech-ops](https://github.com/meltano/internal-tech-ops) and [open an issue](https://github.com/meltano/internal-tech-ops/issues/new?title=github%20apps%20install%20request) requesting that the following two github apps be installed for your new repo:
-   1. semantic prs
-   2. pre-commit ci
-7. Verify the team permissions and settings for the repo (recommended settings below). You can also create an issue in [internal-tech-ops](https://github.com/meltano/internal-tech-ops) for additional assistance/validation/etc.
-   1. Access - Collaborators and teams
-      1. @aaronsteers -> role: admin
-      2. @meltano/engineer -> role: maintain
-      3. @meltano/team -> role: write
-   2. Branches - Branch protection rules
-      1. Require pull request for merging
-         1. Require approvals -> Required number of approvals: 1
-      2. Require status checks to pass before merge
-      3. Require conversations to be resolved before merge
-   3. Code security and analysis
-      1. Code scanning -> Enabled (config already supplied in repo)
-8. Replace this README.md with something more appropriate
-9. Go forth and build something cool!
+1. Install the project dependencies with `poetry install`:
+
+```shell
+cd path/to/your/project
+poetry install
+```
+
+2. Verify that you can invoke the extension:
+
+```shell
+poetry run tableau_extension --help
+poetry run tableau_extension describe --format=yaml
+poetry run tableau_invoker --help # if you have are wrapping another tool
+```
+
+## Template updates
+
+This project was generated with [copier](https://copier.readthedocs.io/en/stable/) from the [Meltano EDK template](https://github.com/meltano/edk).
+Answers to the questions asked during the generation process are stored in the `.copier_answers.yml` file.
+
+Removing this file can potentially cause unwanted changes to the project if the supplied answers differ from the original when using `copier update`.

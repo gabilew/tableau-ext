@@ -1,52 +1,36 @@
 [tool.poetry]
-name = "basic-python-template"
-version = "0.1.0"
-description = ""
-authors = ["Meltano Team and Contributors"]
-maintainers = ["Meltano Team and Contributors"]
-readme = "README.md"
-homepage = "https://meltano.com"
-repository = "https://github.com/meltano/basic-python-template"
+name = "tableau-ext"
+version = "0.0.1"
+description = "`tableau-ext` is a Meltano utility extension."
+authors = ["Data Engineering"]
 license = "Apache 2.0"
-
-packages = [{include = "basic_python_template"}]
-
-[tool.poetry.urls]
-"Issue Tracker" = "https://github.com/meltano/basic-python-template/issues"
-"Twitter" = "https://twitter.com/meltanodata/"
-"Changelog" = "https://github.com/meltano/basic-python-template/blob/main/CHANGELOG.md"
-"Slack" = "https://meltano.com/slack"
-"Youtube" = "https://www.youtube.com/meltano"
+packages = [
+    { include = "tableau_ext" }
+    # uncomment this if you want to include static assets
+    # { include = "files_tableau-ext.*" }
+]
+# If you need to static assets with your extension, you can add them here.
+# Under a directory path of "files_tableau-ext/"
+#include = [
+#    "files_tableau-ext/somefile.thing"
+#]
 
 [tool.poetry.dependencies]
-python = "<3.11,>=3.7"
-requests = "^2.28.2"
-types-requests = "^2.28.11.15"
+python = "<3.12,>=3.7"
+PyYAML = "^6.0.0"
+click = "^8.1.3"
+typer = "^0.6.1"
+"meltano.edk"= {git = "https://github.com/meltano/edk.git", rev="main"}
 
-[tool.poetry.group.dev.dependencies]
-# Many dev deps (e.g. linters) should be managed by pre-commit. This gives them
-# their own virtual environment where they won't conflict with anything other
-# deps. See: `.pre-commit-config.yaml`.
-pre-commit = "^2.20.0"
-pytest = "^7.1"
-
-[tool.isort]
-profile = "black"
-multi_line_output = 3 # Vertical Hanging Indent
-src_paths = "basic_python_template"
-
-[tool.mypy]
-disallow_untyped_defs = true
-check_untyped_defs = true
-no_implicit_optional = true
-warn_return_any = true
-warn_unused_ignores = true
-show_error_codes = true
-exclude = "tests"
-
-[tool.pytest.ini_options]
-addopts = "-ra"
+[tool.poetry.dev-dependencies]
+black = "^22.3.0"
+isort = "^5.10.1"
+flake8 = "^3.9.0"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.8"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+tableau_extension = 'tableau_ext.main:app'
+tableau_invoker = 'tableau_ext.pass_through:pass_through_cli'
