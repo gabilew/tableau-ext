@@ -1,8 +1,6 @@
 import os
 import unittest
 
-from omegaconf import UnionNode
-
 from tableau_ext.utils import prepared_env
 
 class TestUtils(unittest.TestCase):
@@ -14,7 +12,7 @@ class TestUtils(unittest.TestCase):
             'TEST_API_VERSION': 'd',
             'TEST_SITE_ID': 'e',
         }
-        
+
         with unittest.mock.patch.dict(os.environ, envs):
             config = prepared_env("TEST")
 
