@@ -8,7 +8,6 @@ import requests
 import structlog
 from meltano.edk import models
 from meltano.edk.extension import ExtensionBase
-
 from tableau_ext.tableau_auth import TableauAuth
 from tableau_ext.tableau_requests import refresh
 from tableau_ext.utils import prepared_env
@@ -46,7 +45,7 @@ class Tableau(ExtensionBase):
         """
         command_name, command_args = command_args[0], command_args[1:]
         if command_name == "refresh":
-            self._refresh(datasource_id=command_args[0])
+            log.info(self._refresh(datasource_id=command_args[0]).text)
 
     def _refresh(self, datasource_id: str) -> requests.Response:
         """Method to call refresh request.
