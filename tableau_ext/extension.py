@@ -8,6 +8,7 @@ import requests
 import structlog
 from meltano.edk import models
 from meltano.edk.extension import ExtensionBase
+
 from tableau_ext.tableau_auth import TableauAuth
 from tableau_ext.tableau_requests import refresh
 from tableau_ext.utils import prepared_env

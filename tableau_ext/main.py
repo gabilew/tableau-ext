@@ -8,6 +8,7 @@ import structlog
 import typer
 from meltano.edk.extension import DescribeFormat
 from meltano.edk.logging import default_logging_config, parse_log_level
+
 from tableau_ext.extension import Tableau
 
 APP_NAME = "Tableau"
@@ -28,7 +29,7 @@ def initialize(
     ctx: typer.Context,
     force: bool = typer.Option(False, help="Force initialization (if supported)"),
 ) -> None:
-    """Initialize the Tableau plugin."""
+    """Initialize the Tableau plugin."""  # noqa: DAR101
     try:
         ext.initialize(force)
     except Exception:
@@ -47,7 +48,7 @@ def invoke(ctx: typer.Context, command_args: List[str]) -> None:
     Note: that if a command argument is a list, such as command_args,
     then unknown options are also included in the list and NOT stored in the
     context as usual.
-    """
+    """  # noqa: DAR101
     command_name, command_args = command_args[0], command_args[1:]
     log.debug(
         "called", command_name=command_name, command_args=command_args, env=os.environ
@@ -59,7 +60,7 @@ def invoke(ctx: typer.Context, command_args: List[str]) -> None:
 def describe(
     output_format: DescribeFormat = typer.Option(
         DescribeFormat.text, "--format", help="Output format"
-    )
+    )  # noqa: DAR101
 ) -> None:
     """Describe the available commands of this extension."""
     try:
@@ -82,9 +83,10 @@ def main(
         False, "--log-levels", envvar="LOG_LEVELS", help="Show log levels"
     ),
     meltano_log_json: bool = typer.Option(
-        False, "--meltano-log-json",
+        False,
+        "--meltano-log-json",  # noqa: DAR101
         envvar="MELTANO_LOG_JSON",
-        help="Log in the meltano JSON log format"
+        help="Log in the meltano JSON log format",
     ),
 ) -> None:
     """Simple Meltano extension that wraps the tableau CLI."""
@@ -92,5 +94,5 @@ def main(
         level=parse_log_level(log_level),
         timestamps=log_timestamps,
         levels=log_levels,
-        json_format=meltano_log_json
+        json_format=meltano_log_json,
     )
