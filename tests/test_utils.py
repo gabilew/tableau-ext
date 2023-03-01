@@ -20,5 +20,6 @@ class TestUtils(TestCase):
             assert len(config) == 5
             assert config["TOKEN_SECRET"] == "a"
 
+    def test_prepared_env_failure(self) -> None:
         with mock.patch.dict(os.environ, {}) and self.assertRaises(Exception):
-            config = prepared_env("TEST")
+            prepared_env("TEST")
