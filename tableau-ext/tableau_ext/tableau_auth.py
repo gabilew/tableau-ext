@@ -1,25 +1,33 @@
-"""
-Tableau authentication module
-"""
+"""Tableau authentication module."""
+import os
+from typing import Dict, Mapping
 
 import requests
-from typing import Mapping, Any
-
-URL = "https://dub01.online.tableau.com/api/3.18/auth/signin"
 
 
 class TableauAuth:
-    """authentication class"""
+    """authentication class."""
 
-    def __init__(self, config: Mapping[str, Any]):
-        self.token_secret = config.get("TOKEN_SECRET", None)
-        self.token_name = config.get("TOKEN_NAME", None)
-        self.auth_url = URL
+    def __init__(self, config: Dict[str, str]) -> None:
+        """Intialises the Tableau authentication class.
 
-    def sign_in(self):
-        """sign in to tableau to get the api token to make other requests
+        Args:
+            config (Mapping[str, Any]): config file.
+
+        Returns: None
+        """
+        self.token_secret = config["TOKEN_SECRET"]
+        self.token_name = config["TOKEN_NAME"]
+        self.api_version = config["API_VERSION"]
+        self.auth_url = os.path.join(
+            config["BASE_URL"], self.api_version, "auth/signin"
+        )
+
+    def sign_in(self) -> requests.Response:
+        """Sign in to tableau to get the api token to make other requests.
+
         Returns:
-            requests.response: response with updated header
+            requests.response: response with updated header.
         """
         body = {
             "credentials": {
@@ -41,9 +49,14 @@ class TableauAuth:
         self.api_token = response.json()["credentials"]["token"]
         return response
 
-    def get_headers(self, response):
-        """get the headers with updated api token after signing in"""
+    def get_headers(self) -> Mapping[str, str]:
+        """Get the headers with updated api token after signing in.
+
+        Returns:
+            Mapping[str, str]: headers to be used in the requests.
+        """
         self.sign_in()
-        response.headers["X-Tableau-Auth"] = self.api_token
-        response.headers["Accept"] = "application/json"
-        return response
+        headers = {}
+        headers["X-Tableau-Auth"] = self.api_token
+        headers["Accept"] = "application/json"
+        return headers

@@ -20,6 +20,8 @@ packages = [{include = "basic_python_template"}]
 
 [tool.poetry.dependencies]
 python = "<3.11,>=3.7"
+requests = "^2.28.2"
+types-requests = "^2.28.11.15"
 
 [tool.poetry.group.dev.dependencies]
 # Many dev deps (e.g. linters) should be managed by pre-commit. This gives them
