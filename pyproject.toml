@@ -48,7 +48,11 @@ show_error_codes = true
 exclude = "tests"
 
 [tool.pytest.ini_options]
-addopts = "-ra"
+addopts = [
+    "-ra",
+    "--cov=tableau_ext",
+    "--cov-report=term-missing",
+]
 
 [build-system]
 requires = ["poetry-core"]
