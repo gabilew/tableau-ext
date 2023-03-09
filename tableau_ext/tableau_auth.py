@@ -5,6 +5,8 @@ from typing import Dict, Mapping
 import requests
 import structlog
 
+log = structlog.get_logger()
+
 
 class TableauAuth:
     """authentication class."""
@@ -12,13 +14,26 @@ class TableauAuth:
     def __init__(self, config: Dict[str, str]) -> None:
         """Intialises the Tableau authentication class.
 
+            Authentication can be done either with personalAccessTokenName
+            or username.
+
         Args:
-            config (Mapping[str, Any]): config file.
+            config (Dict[str, Any]): config file.
 
         Returns: None
         """
-        self.token_secret = config["TOKEN_SECRET"]
-        self.token_name = config["TOKEN_NAME"]
+        self.token_secret = None
+        self.token_name = None
+        self.username = None
+        self.password = None
+
+        if "TOKEN_NAME" in config:
+            self.token_secret = config["TOKEN_SECRET"]
+            self.token_name = config["TOKEN_NAME"]
+        else:
+            self.username = config["USERNAME"]
+            self.password = config["PASSWORD"]
+
         self.api_version = config["API_VERSION"]
         self.auth_url = os.path.join(
             config["BASE_URL"], self.api_version, "auth/signin"
@@ -31,13 +46,22 @@ class TableauAuth:
             requests.exceptions.HTTPError: http request returned status code >= 300
             Exception: payload is not complete
         """
-        body = {
-            "credentials": {
-                "personalAccessTokenName": self.token_name,
-                "personalAccessTokenSecret": self.token_secret,
-                "site": {"contentUrl": "saltpayreportingco"},
+        if self.token_name is not None:
+            body = {
+                "credentials": {
+                    "personalAccessTokenName": self.token_name,
+                    "personalAccessTokenSecret": self.token_secret,
+                    "site": {"contentUrl": "saltpayreportingco"},
+                }
             }
-        }
+        else:
+            body = {
+                "credentials": {
+                    "name": self.username,
+                    "password": self.password,
+                    "site": {"contentUrl": "saltpayreportingco"},
+                }
+            }
 
         response = requests.post(
             self.auth_url,
