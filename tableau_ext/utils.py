@@ -25,10 +25,10 @@ def prepared_env(prefix: str) -> Dict[str, str]:
     config["SITE_ID"] = os.environ.get(prefix + "_SITE_ID", "")
 
     # check which sign in variables are available
-    if config["USERNAME"] != "":
+    if config["USERNAME"] != "" and config["PASSWORD"] != "":
         config.pop("TOKEN_SECRET")
         config.pop("TOKEN_NAME")
-    elif config["TOKEN_NAME"] != "":
+    elif config["TOKEN_NAME"] != "" and config["TOKEN_SECRET"] != "":
         config.pop("USERNAME")
         config.pop("PASSWORD")
     else:
