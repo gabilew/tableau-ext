@@ -1,6 +1,7 @@
 # Tableau
 
 Tableau is A meltano utility extension for Tableau that wraps the `tableau` command.
+This extension supports the `refresh` method that refreshes a tableau data source [api doc](https://help.tableau.com/current/api/rest_api/en-us/REST/rest_api_ref_data_sources.htm#update_data_source)
 
 ## Installing this extension for local development
 
@@ -17,6 +18,30 @@ poetry install
 poetry run tableau_extension --help
 poetry run tableau_extension describe --format=yaml
 poetry run tableau_invoker --help # if you have are wrapping another tool
+```
+
+## Cofiguration
+Add the following env vars:
+```
+TABLEAU_TOKEN_SECRET=<tableau token secret>
+TABLEAU_TOKEN_NAME=<tableau token name>
+TABLEAU_BASE_URL=<tableau api url>
+TABLEAU_SITE_ID=<tableau site>
+TABLEAU_API_VERSION=<api version>
+```
+or
+```
+TABLEAU_USERNAME=<tableau username>
+TABLEAU_PASSWORD=<tableau password>
+TABLEAU_BASE_URL=<tableau api url>
+TABLEAU_SITE_ID=<tableau site>
+TABLEAU_API_VERSION=<api version>
+```
+## Running the invoke methods
+The refresh method updated a datasource based on the datasource luid from tableau
+
+```shell
+poetry run tableau_invoker:refresh <datasource-luid>
 ```
 
 ## Template updates
