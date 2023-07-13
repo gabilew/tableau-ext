@@ -14,8 +14,6 @@ APP_NAME = "Tableau"
 
 log = structlog.get_logger(APP_NAME)
 
-ext = Tableau()
-
 typer.core.rich = None  # remove to enable stylized help output when `rich` is installed
 app = typer.Typer(
     name=APP_NAME,
@@ -30,6 +28,7 @@ def initialize(
 ) -> None:
     """Initialize the Tableau plugin."""  # noqa: DAR101
     try:
+        ext = Tableau()
         ext.initialize(force)
     except Exception:
         log.exception(
@@ -52,6 +51,7 @@ def invoke(ctx: typer.Context, command_args: List[str]) -> None:
     log.debug(
         "called", command_name=command_name, command_args=command_args, env=os.environ
     )
+    ext = Tableau()
     ext.pass_through_invoker(log, command_name, *command_args)
 
 
@@ -63,7 +63,7 @@ def describe(
 ) -> None:
     """Describe the available commands of this extension."""
     try:
-        typer.echo(ext.describe_formatted(output_format))
+        typer.echo(Tableau().describe_formatted(output_format))
     except Exception:
         log.exception(
             "describe failed with uncaught exception, please report to maintainer"
