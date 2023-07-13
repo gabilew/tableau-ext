@@ -15,6 +15,7 @@ from tableau_ext.utils import prepared_env
 log = structlog.get_logger()
 
 ENV_PREFIX = "TABLEAU"
+CMD_REFRESH = "refresh"
 
 
 class Tableau(ExtensionBase):
@@ -23,6 +24,9 @@ class Tableau(ExtensionBase):
     def __init__(self) -> None:
         """Initialize the extension."""
         self.tableau_bin = "tableau"
+        self.env_config = {}
+
+    def _setup_config(self) -> None:
         self.env_config = prepared_env(ENV_PREFIX)
 
         authenticator = TableauAuth(self.env_config)
@@ -35,7 +39,7 @@ class Tableau(ExtensionBase):
         self.site_id = self.env_config["SITE_ID"]
 
     def invoke(self, command_name: str | None, *command_args: Any) -> None:
-        """Invoke the underlying cli, that is being wrapped by this extension.
+        """Invoke the underlying api, that is being wrapped by this extension.
 
         Args:
             command_name: The name of the command to invoke.
@@ -44,10 +48,12 @@ class Tableau(ExtensionBase):
         Returns None
         """
         command_name, command_args = command_args[0], command_args[1:]
-        if command_name == "refresh":
-            log.info(self._refresh(datasource_id=command_args[0]).text)
+        if command_name == CMD_REFRESH:
+            log.info(self._refresh(command_args).text)
+        else:
+            log.error(f"Command {command_name} not supported")
 
-    def _refresh(self, datasource_id: str) -> requests.Response:
+    def _refresh(self, *args: Any) -> requests.Response:
         """Method to call refresh request.
 
         Args:
@@ -56,12 +62,34 @@ class Tableau(ExtensionBase):
         Returns:
             requests.Response: respose of the refresh request.
         """
+        self._setup_config()
+
+        if len(args[0]) > 1:
+            raise Exception(f"Invalid args. Only allowed argument is the Datasoure LUID, args recieved: {len(args[0])}")
+
+        if len(args[0]) == 1:
+            datasource_id = self._get_datasource_luid(args[0][0])
+        else:
+            datasource_id = self._get_datasource_luid(None)
+
         return refresh(
             datasource_id=datasource_id,
             site_id=self.site_id,
             url=self.base_url,
             headers=self.tableau_headers,
         )
+
+    def _get_datasource_luid(self, luid):
+        if luid is None:
+            id = self.env_config.get("DATASOURCE_LUID", "")
+            if id == "":
+                raise Exception("DATASOURCE_LUID env var not defined")
+            return id
+
+        if type(luid) != str:
+            raise TypeError("luid is not of type str")
+
+        return luid
 
     def describe(self) -> models.Describe:
         """Describe the extension.
@@ -72,10 +100,14 @@ class Tableau(ExtensionBase):
         return models.Describe(
             commands=[
                 models.ExtensionCommand(
-                    name="tableau_extension", description="extension commands"
+                    name="tableau_extension",
+                    description="extension commands",
+                    commands=[CMD_REFRESH]
                 ),
                 models.InvokerCommand(
-                    name="tableau_invoker", description="pass through invoker"
+                    name="tableau_invoker",
+                    description="pass through invoker",
+                    commands=[f":{CMD_REFRESH}"]
                 ),
             ]
         )
