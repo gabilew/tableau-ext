@@ -17,7 +17,7 @@ class TestUtils(TestCase):
         with mock.patch.dict(os.environ, envs):
             config = prepared_env("TEST")
 
-            assert len(config) == 5
+            assert len(config) == 6
             assert config["TOKEN_SECRET"] == "a"
 
     def test_prepared_env_missing_credentials(self) -> None:
@@ -53,5 +53,5 @@ class TestUtils(TestCase):
         with mock.patch.dict(os.environ, envs):
             config = prepared_env("TEST")
 
-            assert len(config) == 5
+            assert len(config) == 6
             assert config["PASSWORD"] == "b"

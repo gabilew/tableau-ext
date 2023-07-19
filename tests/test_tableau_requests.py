@@ -14,6 +14,7 @@ class TestTableauRequests(TestCase):
                 url="base_url/sites/321/datasources/123/refresh", headers={}, json={}
             )
 
+    def test_refresh_exception_on_500(self) -> None:
         with mock.patch("tableau_ext.tableau_requests.requests.post") as mocked_post:
             mocked_post.return_value.status_code = 500
 
